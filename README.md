@@ -4,11 +4,13 @@ this project is project for coding challenge kriya - Create simple Api with Go &
 ## How To Run
 - First, Clone this project.
 - Go to cloned project directory
+
   example :
     ```bash
        cd /usr/share/gokriyatest
     ```
 - Input the postgree configuration in the .env file
+  
   example :
 
     ```bash
@@ -27,6 +29,7 @@ this project is project for coding challenge kriya - Create simple Api with Go &
 ## API Collection
 - Collection API in Postman : [https://www.getpostman.com/collections/f834c72e863afd8558ab](https://www.getpostman.com/collections/f834c72e863afd8558ab)
 - Variabel for Collection :
+
   example :
     ```bash
        {{server}} => http://192.168.0.151:1234/
