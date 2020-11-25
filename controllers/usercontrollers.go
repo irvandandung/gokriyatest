@@ -18,7 +18,7 @@ type Db struct{
 
 type MyClaims struct {
     jwt.StandardClaims
-    User models.User
+    User models.Users
 }
 
 func (db *Db) UserLogin(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +55,7 @@ func (db *Db) UserLogin(w http.ResponseWriter, r *http.Request) {
             Issuer:    APPLICATION_NAME,
             ExpiresAt: time.Now().Add(LOGIN_EXPIRATION_DURATION).Unix(),
         },
-        User : res.Data,
+        User : res,
     }
     log.Println(claims)
 
