@@ -25,6 +25,7 @@ this project is project for coding challenge kriya - Create simple Api with Go &
     ```bash
        go run .
     ```
+- This program running in port 1234
 
 ## API Collection
 - Collection API in Postman : [https://www.getpostman.com/collections/f834c72e863afd8558ab](https://www.getpostman.com/collections/f834c72e863afd8558ab)
