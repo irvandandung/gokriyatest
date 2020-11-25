@@ -23,7 +23,7 @@ type User struct{
 	Username string `json:"username"`
 	Email string `json:"email"`
 	Password string `json:"password"`
-	Status Status
+	Status Status `json: "status"`
 }
 
 type Status struct{

@@ -6,9 +6,9 @@ import(
 	"github.com/go-pg/pg/orm"
 )
 
-func GetAllDataUser(db *pg.DB, users []models.Users, limit int) ([]models.Users, error){
+func GetAllDataUser(db *pg.DB, users []models.Users, limit int, offset int) ([]models.Users, error){
 	err := db.Model(&users).ColumnExpr("users.id").ColumnExpr("users.data").ColumnExpr("roles.id AS roles__id").ColumnExpr("roles.data AS roles__data").
-	Join("LEFT JOIN roles AS roles ON users.role_id = roles.id").Limit(limit).Select()
+	Join("LEFT JOIN roles AS roles ON users.role_id = roles.id").Limit(limit).Offset(offset).Select()
     return users, err
 }
 
