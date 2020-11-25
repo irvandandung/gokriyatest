@@ -1,7 +1,6 @@
 package helpers
 
 import(
-	"log"
 	"golang.org/x/crypto/bcrypt"
 )
 
