@@ -98,9 +98,10 @@ func (db *Db) GetAllDataUser(w http.ResponseWriter, r *http.Request) {
     offset := (page - 1) * 5
 
     user, err = repositorys.GetAllDataUser(pg, user, limit, offset)
-    if err != nil{
-    	log.Println(err)
-    }
+    if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+	}
 
     var data []interface{}
     for _, val := range user {
@@ -142,7 +143,7 @@ func (db *Db) InsertDataUser(w http.ResponseWriter, r *http.Request) {
 
     role_name := userInfo["Role Name"].(string)
     if role_name != "Admin"{
-    	http.Error(w, "Sorry, You can't access this request because you not admin!", http.StatusUnauthorized)
+    	http.Error(w, "Sorry, You can't access this request because you're not admin!", http.StatusUnauthorized)
         return
     }
 
@@ -177,16 +178,20 @@ func (db *Db) InsertDataUser(w http.ResponseWriter, r *http.Request) {
 		Role_id : "d57bfbfe-4979-4809-a151-f6cd30de657b",
 	}
 	res, err = repositorys.InsertDataUser(pg, userInsert)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+	}
 
 	if res.RowsAffected() == 1 {
 		response = map[string]interface{}{
 			"status" : res.RowsAffected(),
-			"message" : "Insert success!",
+			"message" : "Insert successful!",
 		}
 	}else{
 		response = map[string]interface{}{
 			"status" : res.RowsAffected(),
-			"message" : "Insert not success!",
+			"message" : "Insert not was successful!",
 		}
 	}
 	
@@ -194,11 +199,118 @@ func (db *Db) InsertDataUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (db *Db) UpdateDataUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	pg := db.Pg
+	userInfo := userInfo(r.Context().Value("userInfo").(jwt.MapClaims))
+	var res orm.Result
+	var user models.User
+	var response map[string]interface{}
+	var err error
+
+	if r.Method != "POST" {
+        http.Error(w, "Unsupported http method!", http.StatusBadRequest)
+        return
+    }
+
+	role_name := userInfo["Role Name"].(string)
+    if role_name != "Admin"{
+    	http.Error(w, "Sorry, You can't access this request because you're not admin!", http.StatusUnauthorized)
+        return
+    }
+
+	err = json.NewDecoder(r.Body).Decode(&user)
+
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    user.Password, err = helpers.HashPassword(user.Password)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    keys, ok := r.URL.Query()["id"]
+    if !ok {
+    	http.Error(w, "Please add parameter id!", http.StatusBadRequest)
+    	return 
+    }
+
+    id := keys[0]
+
+    userUpdate := repositorys.Users{
+    	Id : id,
+    	Data : user,
+    	Role_id : "d57bfbfe-4979-4809-a151-f6cd30de657b",
+    }
+
+    res, err = repositorys.UpdateDataUser(pg, userUpdate)
+    if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+	}
+
+	if res.RowsAffected() == 1 {
+		response = map[string]interface{}{
+			"status" : res.RowsAffected(),
+			"message" : "Update successful!",
+		}
+	}else{
+		response = map[string]interface{}{
+			"status" : res.RowsAffected(),
+			"message" : "Data id not found!",
+		}
+	}
 	
+	json.NewEncoder(w).Encode(response)
 }
 
 func (db *Db) DeleteDataUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	pg := db.Pg
+	userInfo := userInfo(r.Context().Value("userInfo").(jwt.MapClaims))
+	var response map[string]interface{}
+
+	role_name := userInfo["Role Name"].(string)
+    if role_name != "Admin"{
+    	http.Error(w, "Sorry, You can't access this request because you're not admin!", http.StatusUnauthorized)
+        return
+    }
+
+	if r.Method != "DELETE" {
+        http.Error(w, "Unsupported http method!", http.StatusBadRequest)
+        return
+    }    
+
+    keys, ok := r.URL.Query()["id"]
+    if !ok {
+    	http.Error(w, "Please add parameter id!", http.StatusBadRequest)
+    	return 
+    }
+
+    id := keys[0]
+    log.Println(id)
+
+    res, err := repositorys.DeleteDataUser(pg, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+	}
+
+	if res.RowsAffected() == 1 {
+		response = map[string]interface{}{
+			"status" : res.RowsAffected(),
+			"message" : "Delete successful!",
+		}
+	}else{
+		response = map[string]interface{}{
+			"status" : res.RowsAffected(),
+			"message" : "Data id not found!",
+		}
+	}
 	
+	json.NewEncoder(w).Encode(response)
 }
 
 

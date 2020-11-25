@@ -13,7 +13,7 @@ func Routes(pg *pg.DB, r *mux.Router){
 	r.HandleFunc("/user/get-user-data", controllers.GetUserData)
 	r.HandleFunc("/user/insert-user", db.InsertDataUser)
 	r.HandleFunc("/user/update-user", db.UpdateDataUser)
-	r.HandleFunc("/user/delete-user", db.UpdateDataUser)
+	r.HandleFunc("/user/delete-user", db.DeleteDataUser)
 
 	//add middleware with jwt security
 	r.Use(controllers.JwtAuth)
