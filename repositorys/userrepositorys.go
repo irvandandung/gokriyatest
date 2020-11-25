@@ -12,6 +12,11 @@ func GetAllDataUser(db *pg.DB, users []models.Users, limit int) ([]models.Users,
     return users, err
 }
 
+func GetDataUserByUsername(db *pg.DB, user models.Users, username string) (models.Users, error){
+	err := db.Model(&user).ColumnExpr("users.id").ColumnExpr("users.data").ColumnExpr("roles.id AS roles__id").ColumnExpr("roles.data AS roles__data").
+	Join("LEFT JOIN roles AS roles ON users.role_id = roles.id").Where("users.data->>'username' = ?", username).Select()
+	return user, err
+}
 
 type Users struct{
 	Id string  `json:"id" pg:"id,pk"`
