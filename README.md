@@ -9,6 +9,7 @@ this project is project for coding challenge kriya - Create simple Api with Go &
     ```bash
        cd /usr/share/gokriyatest
     ```
+- Rename .env.example file to .env
 - Input the postgree configuration in the .env file
   
   example :
