@@ -3,12 +3,15 @@ this project is project for coding challenge kriya - Create simple Api with Go &
 
 ## How To Run
 - First, Clone this project.
-- Go to cloned project directory
+- Go to cloned project directory.
 
   example :
     ```bash
        cd /usr/share/gokriyatest
     ```
+   
+- Create Database kriya_test in postgree.
+- Restore or import kriya_test.sql to kriya_test database that was created.
 - Rename .env.example file to .env
 - Input the postgree configuration in the .env file
   
